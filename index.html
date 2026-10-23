@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ปูไทย // สุ่มเมนูอาหาร</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 1. Navbar -->
+    <nav class="navbar">
+        <a href="#" class="brand">
+            <span class="brand-mark"></span>
+            <span class="brand-text">
+                <strong>PULL THAI</strong>
+                <small>RECRUITMENT // CANTEEN-07</small>
+            </span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#display" class="active">สุ่มเมนู</a></li>
+            <li><a href="#inventory">คลังอาหาร</a></li>
+            <li><a href="#history">ประวัติ</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="dot"></span>
+            <span>PULLS <b id="pullCount">0</b></span>
+            <span class="sep">|</span>
+            <span>PITY <b id="pityCount">0</b>/<span id="hardPity">99</span></span>
+            <span class="sep">|</span>
+            <span>TOKEN <b id="tokenCount">0</b></span>
+            <button class="btn-sound" id="soundBtn" title="เปิด/ปิดเสียง">♪ ON</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 2. ส่วนแสดงผลข้อมูลอาหาร -->
+        <section id="display" class="display">
+            <div class="section-tag"><span>01</span> HEADHUNTING RESULT</div>
+
+            <div class="banner">
+                <div class="banner-title">
+                    <small>LIMITED HEADHUNTING // RATE UP</small>
+                    <strong id="bannerName"></strong>
+                </div>
+                <div class="banner-rateup" id="bannerRateUp"></div>
+                <div class="banner-stats" id="bannerStats"></div>
+            </div>
+
+            <div class="food-card" id="foodCard" data-rarity="0">
+                <div class="food-image">
+                    <img id="foodImage" src="" alt="">
+                    <div class="image-placeholder" id="imagePlaceholder">
+                        <span>NO SIGNAL</span>
+                        <small>กดปุ่มสุ่มเพื่อเริ่ม</small>
+                    </div>
+                    <div class="corner tl"></div><div class="corner tr"></div>
+                    <div class="corner bl"></div><div class="corner br"></div>
+                </div>
+
+                <div class="food-info">
+                    <div class="rarity-row">
+                        <div class="rarity" id="foodRarity"></div>
+                        <div class="tier-badge" id="foodTier" hidden></div>
+                    </div>
+                    <p class="food-code" id="foodCode">ID: ----</p>
+                    <h1 class="food-name" id="foodName">ยังไม่ได้สุ่ม</h1>
+                    <p class="food-name-en" id="foodNameEn">AWAITING RECRUITMENT</p>
+                    <div class="divider"></div>
+                    <p class="food-desc" id="foodDesc">ไม่รู้จะกินอะไรดี? กดปุ่ม "สุ่มเมนู" ด้านล่าง แล้วปล่อยให้ระบบ Headhunting เลือกมื้อนี้ให้คุณ</p>
+                    <div class="food-price">
+                        <span class="label">PRICE</span>
+                        <span class="value"><b id="foodPrice">---</b> ฿</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. ปุ่มสุ่ม -->
+            <div class="pull-bar">
+                <div class="hazard"></div>
+                <button class="btn-pull" id="pullBtn">
+                    <span class="btn-icon">◆</span>
+                    <span class="btn-label">สุ่มเมนู<small>HEADHUNT ×1</small></span>
+                </button>
+                <button class="btn-pull btn-pull-10" id="pull10Btn">
+                    <span class="btn-icon">◆◆</span>
+                    <span class="btn-label">สุ่ม 10 ครั้ง<small>HEADHUNT ×10</small></span>
+                </button>
+                <div class="hazard"></div>
+            </div>
+            <details class="rates">
+                <summary>รายละเอียดอัตรา // RATE DETAILS</summary>
+                <ul>
+                    <li>อัตราพื้นฐาน: ★6 = 2% · ★5 = 8% · ★4 = 50% · ★3 = 40%</li>
+                    <li>ไม่ได้ ★6 ติดกัน 50 ครั้ง ตั้งแต่ครั้งที่ 51 อัตรา ★6 เพิ่มครั้งละ 2% (ได้แน่นอนภายใน 99 ครั้ง)</li>
+                    <li>การันตี ★5 ขึ้นไปอย่างน้อย 1 ครั้งในทุก 10 ครั้ง</li>
+                    <li>เมื่อได้ ★6 หรือ ★5 มีโอกาส 50% เป็นเมนูเรทอัป ถ้าพลาด ครั้งถัดไปของระดับนั้นการันตีเมนูเรทอัป</li>
+                    <li>Pity นับต่อเนื่อง ไม่รีเซ็ตเมื่อปิดเว็บ</li>
+                </ul>
+            </details>
+        </section>
+
+        <section id="inventory" class="inventory">
+            <div class="section-head">
+                <div class="section-tag"><span>02</span> RATION INVENTORY</div>
+                <div class="inv-summary">
+                    <span>สะสมแล้ว <b id="invOwned">0</b>/<b id="invTotal">0</b></span>
+                    <button class="btn-reset" id="resetBtn">รีเซ็ตข้อมูล</button>
+                </div>
+            </div>
+            <div class="reset-confirm" id="resetConfirm" hidden>
+                <span>ลบคลังอาหาร ประวัติ และ pity ทั้งหมด? ย้อนกลับไม่ได้</span>
+                <button class="btn-reset danger" id="resetYes">ลบเลย</button>
+                <button class="btn-reset" id="resetNo">ยกเลิก</button>
+            </div>
+            <p class="inv-help">ได้ซ้ำจะอัปเกรดระดับ E0 ▸ E6 · ได้ซ้ำเกิน E6 แปลงเป็น TOKEN</p>
+            <div class="inv-grid" id="invGrid"></div>
+        </section>
+
+        <section id="history" class="history">
+            <div class="section-tag"><span>03</span> PULL LOG</div>
+            <ol class="history-list" id="historyList"></ol>
+        </section>
+    </main>
+
+    <footer>
+        <span>PULL THAI // INSPIRED BY ARKNIGHTS: ENDFIELD</span>
+        <span>ภาพอาหาร: Wikimedia Commons</span>
+    </footer>
+
+    <!-- Gacha overlay -->
+    <div class="gacha" id="gacha" hidden>
+        <div class="g-grid"></div>
+        <div class="g-embers" id="gEmbers"></div>
+
+        <div class="g-stage" id="gStage">
+            <div class="g-beam"></div>
+            <div class="g-capsule"><div class="g-capsule-core"></div></div>
+            <div class="g-ring r1"></div>
+            <div class="g-ring r2"></div>
+            <div class="g-ring r3"></div>
+            <div class="g-shards" id="gShards"></div>
+        </div>
+
+        <div class="g-warning" id="gWarning">
+            <div class="g-warning-stripe"></div>
+            <p id="gWarningText">WARNING // HIGH-VALUE SIGNAL DETECTED</p>
+            <div class="g-warning-stripe"></div>
+        </div>
+
+        <div class="g-letterbox top"></div>
+        <div class="g-letterbox bottom"></div>
+
+        <div class="g-hud">
+            <div class="g-hud-top">
+                <span>HEADHUNTING PROTOCOL <em id="gMode">×1</em></span>
+                <span id="gStatus">ESTABLISHING UPLINK...</span>
+            </div>
+            <div class="g-progress"><i id="gProgress"></i></div>
+            <div class="g-hud-bottom">
+                <span id="gCoords">LAT 00.000 / LON 00.000</span>
+                <button class="g-skip" id="gSkip">SKIP ▸▸</button>
+            </div>
+        </div>
+
+        <div class="g-flash"></div>
+
+        <!-- ผลสุ่ม 1 ครั้ง -->
+        <div class="g-reveal" id="gReveal">
+            <div class="g-stars" id="gStars"></div>
+            <div class="g-card">
+                <div class="g-card-img"><img id="gImg" src="" alt=""></div>
+                <div class="g-card-body">
+                    <p class="g-card-tag" id="gTag">NEW RATION ACQUIRED</p>
+                    <h2 id="gName"></h2>
+                    <p class="g-card-en" id="gNameEn"></p>
+                    <p class="g-card-price"><b id="gPrice"></b> ฿</p>
+                    <div class="g-dupe" id="gDupe"></div>
+                </div>
+            </div>
+            <button class="btn-confirm" id="gConfirm">ยืนยัน // CONFIRM</button>
+        </div>
+
+        <!-- ผลสุ่ม 10 ครั้ง -->
+        <div class="g-multi" id="gMulti">
+            <div class="g-multi-grid" id="gMultiGrid"></div>
+            <button class="btn-confirm" id="gConfirm10">ยืนยัน // CONFIRM</button>
+        </div>
+
+        <!-- ★6 spotlight เต็มจอ -->
+        <div class="g-spot" id="gSpot">
+            <div class="g-spot-rays"></div>
+            <div class="g-spot-mark">6★</div>
+            <div class="g-spot-frame">
+                <div class="g-spot-img"><img id="gSpotImg" src="" alt=""></div>
+            </div>
+            <div class="g-spot-text">
+                <div class="g-spot-stars">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <h2 id="gSpotName"></h2>
+                <p id="gSpotEn"></p>
+                <div class="g-spot-tag" id="gSpotTag"></div>
+            </div>
+            <p class="g-spot-hint">แตะเพื่อดำเนินการต่อ // TAP TO CONTINUE</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
